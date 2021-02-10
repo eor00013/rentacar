@@ -1,3 +1,5 @@
+from django.db.models import query
+from django.db.models import Q
 from api.serializers.car_create import CarCreateSerializer
 from api.serializers import CarSerializer
 from typing import List
@@ -5,9 +7,10 @@ from rest_framework import viewsets
 from rest_framework import status
 from rest_framework.response import Response
 import json
-from api.models import Car
+from api.models import Car, Order
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
+from drf_yasg.openapi import Parameter, TYPE_STRING, TYPE_INTEGER, IN_QUERY
 
 
 # # Create your views here.
@@ -129,13 +132,33 @@ from drf_yasg.utils import swagger_auto_schema
 ####################  DATA BASE(DB/DBB) VERSION ####################
 
 class CarViewSet(viewsets.ViewSet):
+ 
+    @swagger_auto_schema(manual_parameters=[
+        Parameter('city', IN_QUERY, type=TYPE_INTEGER, required=False),
+        Parameter('date_start', IN_QUERY, type=TYPE_STRING, required=False),
+        Parameter('date_end', IN_QUERY, type=TYPE_STRING, required=False)])
     def list(self, request):
         """
         GET (ALL)
         """
-        cars_db = Car.objects.all()
+        city = self.request.query_params.get('city',None)
+        date_start = self.request.query_params.get('date_start',None)
+        date_end = self.request.query_params.get('date_end',None)
+
+        orders_db = Order.objects.filter(
+            Q(date_start__range=(date_start,date_end)) | Q(date_end__range=(date_start, date_end)))
+        
+        if(date_start == None or date_end == None):
+            cars_db = Car.objects.all()
+        else:
+            cars_db = Car.objects.exclude(
+                car_order__in=orders_db)
+
+        if(city):
+            cars_db = cars_db.filter(city=city)
 
         cars_serializer = CarSerializer(cars_db, many=True)
+        
         return Response(cars_serializer.data)
 
     def retrieve(self, request, car_id=None):

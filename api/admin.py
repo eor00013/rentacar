@@ -1,3 +1,4 @@
+from api.models.city import City
 from django.contrib import admin
 from api.models import Brand, Car, Category, ExtendUser, Order, Model
 # Register your models here.
@@ -15,4 +16,5 @@ admin.site.register(Category)
 admin.site.register(ExtendUser)
 admin.site.register(Order)
 admin.site.register(Model)
+admin.site.register(City)
 

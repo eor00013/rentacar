@@ -1,3 +1,4 @@
+from api.models.city import City
 from django.db import models
 from .model import Model
 from .category import Category
@@ -31,6 +32,8 @@ class Car(models.Model):
     category = models.ForeignKey(Category, on_delete=models.PROTECT, related_name='category_car', verbose_name='Category', null=False, blank=False)
     
     model = models.ForeignKey(Model, on_delete=models.PROTECT, related_name='model_car', verbose_name='Model', null=False, blank=False)
+    
+    city = models.ForeignKey(City, on_delete=models.PROTECT, related_name='city_car', verbose_name='City', null=True, blank=False, default=None)
 
     created_at = models.DateTimeField(auto_now_add=True, null=False, blank=False, verbose_name='Creation date')
     

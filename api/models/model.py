@@ -8,6 +8,8 @@ class Model(models.Model):
 
     brand = models.ForeignKey(Brand, on_delete=models.PROTECT, related_name='brand_model', verbose_name='Brand', null=False, blank=False)
 
+    photo = models.ImageField(upload_to='models',null=True, blank=False, default=None)
+
     created_at = models.DateTimeField(auto_now_add=True, null=False, blank=False, verbose_name='Creation date')
     
     updated_at = models.DateTimeField(auto_now=True, null=False, blank=False, verbose_name='Update date')

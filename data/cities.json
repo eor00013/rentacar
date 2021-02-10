@@ -1,0 +1,18 @@
+[
+    {
+      "pk": 0,
+      "name": "Palma"
+    },
+    {
+      "pk": 1,
+      "name": "Madrid"  
+    },
+    {
+      "pk": 2,
+      "name": "Barcelona"
+    },
+    {
+        "pk": 3,
+        "name": "Malaga"
+    }
+  ]

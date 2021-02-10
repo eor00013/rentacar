@@ -1,10 +1,13 @@
 
+from api.models.city import City
 from api.models import Model, Brand, Order, Car, Category
 from django.core.management import BaseCommand
 import json
 from django.contrib.auth.models import User
-
-
+from django.core.files import File
+from django.core.files.temp import NamedTemporaryFile
+import requests
+import os
 
 class Command(BaseCommand):
 
@@ -14,6 +17,7 @@ class Command(BaseCommand):
             print("Cleaning DB")
             Order.objects.all().delete()
             Car.objects.all().delete()
+            City.objects.all().delete()
             Model.objects.all().delete()
             Brand.objects.all().delete()
             Category.objects.all().delete()
@@ -54,6 +58,14 @@ class Command(BaseCommand):
                 model.brand = Brand.objects.get(pk=model_json.get('brand'))
                 model.save()
 
+                req = requests.get(model_json.get('photo'))
+                if req.status_code == 200:
+                    img_temp = NamedTemporaryFile()
+                    img_temp.write(req.content)
+                    img_temp.flush()
+                    model.photo.save(os.path.basename(
+                        model_json.get('photo')), File(img_temp), save=True)        
+
         def insert_categories():
             print("Inserting categories...")
             with open('data/categories.json', 'r') as f:
@@ -83,13 +95,28 @@ class Command(BaseCommand):
                 car.category = Category.objects.get(
                     pk=car_json.get('category'))
                 car.model = Model.objects.get(pk=car_json.get('model'))
+                car.city = City.objects.get(pk=car_json.get('city'))
                 car.save()
+
+        def insert_cities():
+            print("Inserting cities...")
+            with open('data/cities.json', 'r') as f:
+                cities_str = f.read()
+                cities_json = json.loads(cities_str)
+
+            for city_json in cities_json:
+                city = City()
+                city.pk = city_json.get('pk')
+                city.name = city_json.get('name')
+                city.save()
 
         ########################################################
         # Insert all data
         ########################################################
         clean_all_db()
         insert_users()
+        print()
+        insert_cities()
         print()
         insert_brands()
         print()
