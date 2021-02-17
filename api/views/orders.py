@@ -4,9 +4,9 @@ from rest_framework.response import Response
 from drf_yasg.utils import swagger_auto_schema
 
 
-class OrdeViewSet(viewsets.ViewSet):        
+class OrderViewSet(viewsets.ViewSet):        
     @swagger_auto_schema(request_body=OrderCreateSerializer) 
-     def create(self, request):
+    def create(self, request):
         """
          POST
         """

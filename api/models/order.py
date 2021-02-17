@@ -10,7 +10,7 @@ class Order(models.Model):
 
     car = models.ForeignKey(Car, on_delete=models.PROTECT, related_name='car_order', verbose_name='Car', null=False, blank=False)
    
-    user = models.ForeignKey(ExtendUser, on_delete=models.PROTECT, related_name='user_order', verbose_name='User', null=False, blank=False)
+    user = models.ForeignKey(ExtendUser, on_delete=models.PROTECT, related_name='user_order', verbose_name='User', null=True, blank=False)
 
     created_at = models.DateTimeField(auto_now_add=True, null=False, blank=False, verbose_name='Creation date')
     
